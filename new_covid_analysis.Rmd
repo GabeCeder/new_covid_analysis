@@ -1,0 +1,44 @@
+---
+title: "new_covid_analysis"
+author: "Gabe Cederberg"
+date: "11/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+options(tigris_use_cache = TRUE)
+
+# Loading the important packages.
+
+library(readr)
+library(janitor)
+library(ggthemes)
+library(haven)
+library(infer)
+library(readxl)
+library(viridis)  
+library(gganimate)
+library(tidycensus)
+library(RCurl)
+library(tidyverse)
+library(zoo)
+```
+
+```{r, echo = FALSE}
+# state_text <- getURL("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
+state <- read_csv("all-states-history.csv")
+
+a <- state %>% 
+  group_by(state) %>% 
+  arrange(date) %>% 
+  mutate(daily_hosp = hospitalized - lag(hospitalized, k = 1))
+a
+
+a %>% 
+  filter(state == "MN") %>% 
+  ggplot(aes(date, hospitalizedCurrently)) +
+  geom_point()
+```
+
