@@ -42,3 +42,34 @@ a %>%
   geom_point()
 ```
 
+```{r}
+a %>% 
+  filter(!is.na(positiveTestsAntigen)) %>% 
+ # group_by(state) %>% 
+  count(state)
+```
+
+```{r, warning = FALSE}
+national <- read_csv("national-history.csv")
+
+b <- national %>% 
+  mutate(tests_7day = rollmean(totalTestResultsIncrease, k = 7, fill = NA))
+         
+         
+         
+b %>%          
+  ggplot() +
+  geom_point(aes(date, totalTestResultsIncrease)) +
+    geom_line(aes(date, tests_7day, color = states, color.legend = F)) +
+  theme_classic() +
+  labs(
+    title = "Number of COVID-19 Tests Performed Each Day Nationally",
+   # subtitle = "Counties that lean Republican tend to have higher community transmission rates",
+       y = "Number of Tests Performed",
+       x = "Date",
+    caption = "Data from: The COVID Tracking Project") +
+    theme(legend.position = "none")
+    
+
+```
+
