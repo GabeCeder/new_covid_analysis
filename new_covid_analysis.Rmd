@@ -37,6 +37,16 @@ a <- state %>%
 a
 
 a %>% 
+  group_by(date) %>% 
+  summarize(viral = sum(totalTestsViralIncrease),
+            all = sum(totalTestResultsIncrease)) %>% 
+  mutate(pct_pcr = viral/all) %>% 
+  filter(pct_pcr > 0 & pct_pcr <1) %>% 
+  ggplot(aes(date, pct_pcr)) +
+  geom_point() +
+  geom_abline()
+
+a %>% 
   filter(state == "MN") %>% 
   ggplot(aes(date, hospitalizedCurrently)) +
   geom_point()
@@ -44,9 +54,16 @@ a %>%
 
 ```{r}
 a %>% 
-  filter(!is.na(positiveTestsAntigen)) %>% 
+  filter(!is.na(totalTestsPeopleAntigen)) %>% 
  # group_by(state) %>% 
   count(state)
+
+a %>% 
+  filter(state == "IA") %>% 
+    mutate(new_antigen = totalTestsPeopleAntigen - lag(totalTestsPeopleAntigen, k = 1)) %>% 
+  ggplot(aes(date, new_antigen)) +
+  geom_point()
+
 ```
 
 ```{r, warning = FALSE}
